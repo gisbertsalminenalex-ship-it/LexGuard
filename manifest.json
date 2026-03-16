@@ -1,0 +1,37 @@
+{
+  "id": "com.lexguard.app",
+  "name": "LexGuard — Compliance para tu ecommerce",
+  "short_name": "LexGuard",
+  "description": "Auditorías legales, documentos RGPD y alertas normativas para tu tienda online. IA real. Compliance EU.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "theme_color": "#2A5CFF",
+  "background_color": "#080B18",
+  "lang": "es",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "utilities"],
+  "launch_handler": { "client_mode": "focus-existing" },
+  "shortcuts": [
+    {
+      "name": "Nueva auditoría",
+      "short_name": "Auditar",
+      "description": "Analiza el compliance de tu tienda",
+      "url": "/?action=audit"
+    },
+    {
+      "name": "Generar documento",
+      "short_name": "Documento",
+      "description": "Genera un texto legal con IA",
+      "url": "/?action=generator"
+    }
+  ],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

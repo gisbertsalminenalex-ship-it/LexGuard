@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>LexGuard — Compliance para tu ecommerce</title>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#2A5CFF"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="LexGuard"/>
+<link rel="apple-touch-icon" href="/icons/icon-512.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── BASE THEME ── */
+:root{
+  --bg:#F4F6FF;--surface:#FFFFFF;--surface2:#EEF1FF;
+  --border:#DDE2F5;--border2:#C8D0EE;
+  --text:#0D1136;--text2:#4A5180;--text3:#8E96C0;
+  --accent:#2A5CFF;--accent2:#1A3DB5;--accent3:rgba(42,92,255,0.10);
+  --green:#22C55E;--red:#EF4444;--amber:#F59E0B;--purple:#8B5CF6;
+  --glass:rgba(244,246,255,0.92);
+  --shadow:0 2px 16px rgba(42,92,255,0.07);
+  --shadow-md:0 6px 28px rgba(42,92,255,0.11);
+  --shadow-lg:0 16px 52px rgba(42,92,255,0.15);
+  --radius:20px;--radius-sm:12px;--radius-xs:8px;
+  --font:'DM Sans',sans-serif;--serif:'Syne',sans-serif;
+}
+
+/* ── DARK PRO THEME ── */
+.dark{
+  --bg:#080B18;--surface:#0F1322;--surface2:#161B30;
+  --border:#1E2440;--border2:#2A3258;
+  --text:#E8EDFF;--text2:#8B96C8;--text3:#404870;
+  --accent:#4D7FFF;--accent2:#2A5CFF;--accent3:rgba(77,127,255,0.12);
+  --green:#4ADE80;--red:#F87171;--amber:#FCD34D;--purple:#A78BFA;
+  --glass:rgba(8,11,24,0.95);
+  --shadow:0 2px 20px rgba(0,0,0,0.5);
+  --shadow-md:0 6px 32px rgba(0,0,0,0.6);
+  --shadow-lg:0 16px 56px rgba(0,0,0,0.7);
+}
+
+html,body{height:100%;background:var(--bg);font-family:var(--font);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased;transition:background .5s,color .4s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#root{height:100%;max-width:430px;margin:0 auto;background:var(--bg);position:relative;overflow:hidden;transition:background .5s}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUpSheet{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes badgePop{0%{transform:scale(0)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes logoFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.04)}}
+@keyframes splashFade{0%{opacity:1}70%{opacity:1}100%{opacity:0;pointer-events:none}}
+@keyframes textRise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes lineDraw{from{width:0;opacity:0}to{width:56px;opacity:1}}
+@keyframes checkPop{0%{transform:scale(0) rotate(-20deg);opacity:0}60%{transform:scale(1.25) rotate(5deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes progressFill{from{width:0}to{width:var(--target-w)}}
+@keyframes ldot{0%,80%,100%{opacity:.2;transform:scale(.65)}40%{opacity:1;transform:scale(1)}}
+
+.screen-enter{animation:slideInRight .26s cubic-bezier(0.22,1,0.36,1)}
+.screen-enter-up{animation:slideInUp .26s cubic-bezier(0.22,1,0.36,1)}
+
+/* ── SPLASH ── */
+.init-splash{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(150deg,#EEF1FF 0%,#E8EDFF 50%,#F0F4FF 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  animation:splashFade 2.2s cubic-bezier(.4,0,.2,1) forwards;
+  pointer-events:none;overflow:hidden;
+}
+.dark .init-splash{background:radial-gradient(ellipse at center,#0F1322 0%,#080B18 70%)}
+.init-splash-icon{font-size:88px;animation:logoFloat 2.5s ease-in-out infinite;filter:drop-shadow(0 10px 28px rgba(42,92,255,.4));line-height:1;position:relative;z-index:1}
+.init-splash-brand{font-family:var(--serif);font-size:40px;font-weight:800;color:#0D1136;margin-top:14px;letter-spacing:-.5px;animation:textRise .7s cubic-bezier(.22,1,.36,1) .2s both}
+.dark .init-splash-brand{color:#E8EDFF}
+.init-splash-brand em{color:#2A5CFF;font-style:normal}
+.init-splash-line{height:1.5px;background:linear-gradient(90deg,transparent,#2A5CFF,transparent);margin:16px 0 12px;animation:lineDraw .65s ease .5s both}
+.init-splash-sub{font-size:11px;color:#8E96C0;letter-spacing:.18em;text-transform:uppercase;animation:textRise .65s ease .6s both}
+
+/* ── LAYOUT ── */
+.app-shell{display:flex;flex-direction:column;height:100vh}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:96px;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+
+/* ── HEADER ── */
+.top-header{position:sticky;top:0;z-index:20;padding:48px 20px 14px;background:linear-gradient(to bottom,var(--bg) 68%,transparent);display:flex;align-items:flex-end;justify-content:space-between}
+.logo-wrap{display:flex;align-items:center;gap:9px}
+.logo-icon{font-size:22px}
+.logo-text{font-family:var(--serif);font-size:24px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.5px}
+.logo-text em{color:var(--accent);font-style:normal}
+.header-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.pro-badge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:.4px;white-space:nowrap}
+.upgrade-btn{background:var(--surface);border:1.5px solid var(--accent);color:var(--accent);font-family:var(--font);font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;cursor:pointer;transition:all .2s}
+.upgrade-btn:hover{background:var(--accent);color:#fff}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--glass);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;align-items:flex-end;padding:10px 0 24px;z-index:50}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;padding:6px 2px 2px;transition:all .2s;position:relative}
+.nav-btn .ni{font-size:19px;transition:transform .22s cubic-bezier(.34,1.56,.64,1);width:38px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:20px;transition:transform .22s,background .22s}
+.nav-btn .nl{font-size:9px;font-weight:600;color:var(--text3);transition:color .2s;margin-top:1px}
+.nav-btn.active .nl{color:var(--accent);font-weight:700}
+.nav-btn.active .ni{transform:scale(1.12);background:var(--accent3)}
+.nav-center{position:relative;top:-10px;padding-top:0}
+.nav-fab{width:52px;height:52px;border-radius:50%;background:linear-gradient(145deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 8px 24px rgba(42,92,255,.42);transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+.nav-btn.active.nav-center .nav-fab{transform:scale(1.12);box-shadow:0 14px 36px rgba(42,92,255,.58)}
+.nav-badge{position:absolute;top:2px;right:50%;margin-right:-20px;min-width:16px;height:16px;background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px;animation:badgePop .3s cubic-bezier(.34,1.56,.64,1)}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:18px 20px;box-shadow:var(--shadow);margin:0 14px 10px;transition:transform .14s,box-shadow .14s}
+.card-tap{cursor:pointer}
+.card-tap:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.card-tap:active{transform:scale(0.985)}
+
+/* ── SECTION LABEL ── */
+.slabel{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1.1px;text-transform:uppercase;padding:0 22px;margin:18px 0 8px;display:flex;align-items:center;justify-content:space-between}
+
+/* ── EMPTY ── */
+.empty{display:flex;flex-direction:column;align-items:center;padding:44px 28px;gap:10px;text-align:center}
+.empty-icon{font-size:44px;opacity:.4}
+.empty-title{font-size:15px;font-weight:600;color:var(--text2)}
+.empty-sub{font-size:13px;color:var(--text3);line-height:1.55;max-width:240px}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;border-radius:var(--radius-sm);font-family:var(--font);font-weight:600;cursor:pointer;transition:opacity .18s,transform .14s,box-shadow .18s}
+.btn:active{transform:scale(0.97)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:15px 20px;font-size:14px;width:100%;box-shadow:0 8px 24px rgba(42,92,255,.28)}
+.btn-primary:hover:not(:disabled){opacity:.92;box-shadow:0 12px 32px rgba(42,92,255,.38)}
+.btn-ghost{background:var(--surface2);border:1.5px solid var(--border2);color:var(--text2);padding:10px 18px;font-size:13px}
+.btn-danger{background:transparent;border:1.5px solid var(--red);color:var(--red);padding:11px 20px;font-size:13px;width:100%}
+.btn-green{background:var(--green);color:#fff;padding:13px 20px;font-size:14px;width:100%;box-shadow:0 6px 20px rgba(34,197,94,.28)}
+.btn-sm{padding:7px 13px;font-size:11px;border-radius:20px;font-weight:600;border:none;cursor:pointer;transition:all .18s}
+.btn-sm-accent{background:var(--accent3);color:var(--accent)}
+.btn-sm-accent:hover{background:var(--accent);color:#fff}
+.btn-sm-ghost{background:var(--surface2);border:1px solid var(--border2);color:var(--text3)}
+.btn-sm-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm-red{background:rgba(239,68,68,.1);color:var(--red)}
+.btn-sm-red:hover{background:var(--red);color:#fff}
+
+/* ── INPUTS ── */
+.input{width:100%;padding:12px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font);font-size:13px;color:var(--text);outline:none;transition:border-color .18s,box-shadow .18s}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(42,92,255,.1)}
+.input::placeholder{color:var(--text3)}
+.textarea{width:100%;min-height:120px;resize:none;line-height:1.65}
+
+/* ── LOADING ── */
+.ldots span{display:inline-block;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.9);margin:0 2px;animation:ldot 1.1s infinite}
+.ldots span:nth-child(2){animation-delay:.18s}
+.ldots span:nth-child(3){animation-delay:.36s}
+.spinner{width:18px;height:18px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+
+/* ── TOAST ── */
+.toast{position:fixed;top:56px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:12px;font-weight:500;padding:10px 20px;border-radius:24px;z-index:999;white-space:nowrap;animation:toastIn .28s ease;box-shadow:var(--shadow-md)}
+
+/* ── OVERLAY / SHEET ── */
+.overlay{position:fixed;inset:0;background:rgba(13,17,54,.55);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:flex-end;animation:fadeIn .2s ease}
+.sheet{background:var(--surface);border-radius:28px 28px 0 0;padding:28px 22px 44px;max-width:430px;width:100%;margin:0 auto;animation:slideUpSheet .32s cubic-bezier(.32,.72,0,1);max-height:90vh;overflow-y:auto}
+.sheet-handle{width:36px;height:4px;background:var(--border2);border-radius:4px;margin:0 auto 20px}
+
+/* ── LOGIN ── */
+.login-screen{position:fixed;inset:0;background:#080B18;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow-y:auto;padding:32px 24px 48px;z-index:500}
+.login-screen::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 55% at 50% 28%,rgba(42,92,255,.1) 0%,transparent 70%);pointer-events:none;z-index:0}
+.login-inner{position:relative;z-index:1;width:100%;max-width:340px;display:flex;flex-direction:column;align-items:center}
+@keyframes fadeUpLogin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes loginLogoIn{from{opacity:0;transform:scale(.7) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.login-logo{font-size:60px;margin-bottom:6px;filter:drop-shadow(0 0 24px rgba(42,92,255,.5));animation:loginLogoIn .8s cubic-bezier(.22,1,.36,1) .05s both}
+.login-brand{font-family:var(--serif);font-size:38px;font-weight:800;color:#E8EDFF;letter-spacing:-.5px;animation:fadeUpLogin .7s cubic-bezier(.22,1,.36,1) .12s both}
+.login-brand em{color:#4D7FFF;font-style:normal}
+.login-tagline{font-size:14px;color:#4A5180;text-align:center;line-height:1.65;max-width:260px;margin-top:10px;animation:fadeUpLogin .7s cubic-bezier(.22,1,.36,1) .18s both}
+.login-feats{width:100%;margin-top:22px;display:flex;flex-direction:column;border:1px solid rgba(42,92,255,.15);border-radius:16px;overflow:hidden;animation:fadeUpLogin .7s cubic-bezier(.22,1,.36,1) .28s both}
+.login-feat{display:flex;align-items:center;gap:12px;padding:13px 16px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(42,92,255,.07)}
+.login-feat:last-child{border-bottom:none}
+.login-feat-icon{font-size:20px;flex-shrink:0}
+.login-feat-title{font-size:13px;font-weight:600;color:#C8D0EE;line-height:1.2}
+.login-feat-sub{font-size:11px;color:#2A3258;margin-top:1px}
+.login-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:none;border-radius:28px;cursor:pointer;font-family:var(--font);font-weight:600;font-size:15px;padding:16px 20px;transition:all .18s;letter-spacing:.2px}
+.login-btn-main{background:#F4F6FF;color:#0D1136;box-shadow:0 4px 20px rgba(0,0,0,.35);animation:fadeUpLogin .75s cubic-bezier(.22,1,.36,1) .38s both;margin-top:22px}
+.login-btn-main:hover{background:#fff;box-shadow:0 8px 28px rgba(0,0,0,.45);transform:translateY(-1px)}
+.login-btn-main:disabled{opacity:.65;cursor:not-allowed;transform:none}
+.login-note{font-size:11px;color:#2A3258;text-align:center;line-height:1.65;margin-top:14px;animation:fadeUpLogin .7s cubic-bezier(.22,1,.36,1) .48s both}
+.login-note a{color:#4D7FFF;text-decoration:none}
+
+/* ── DASHBOARD HERO ── */
+.hero-card{margin:0 14px 12px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:var(--radius);padding:22px;color:#fff;position:relative;overflow:hidden;box-shadow:0 12px 36px rgba(42,92,255,.32)}
+.hero-card::before{content:'⚖️';position:absolute;right:-6px;top:-8px;font-size:88px;opacity:.1;line-height:1}
+.hero-eyebrow{font-size:10px;font-weight:600;letter-spacing:1px;opacity:.75;text-transform:uppercase;margin-bottom:4px}
+.hero-score{font-family:var(--serif);font-size:52px;line-height:1;font-weight:800}
+.hero-sub{font-size:13px;opacity:.82;margin-top:2px}
+.hero-bar-track{height:6px;background:rgba(255,255,255,.22);border-radius:6px;margin-top:14px;overflow:hidden}
+.hero-bar-fill{height:100%;border-radius:6px;background:rgba(255,255,255,.85);transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+/* ── STATS ROW ── */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 14px 10px}
+.stat-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 10px;text-align:center;box-shadow:var(--shadow)}
+.stat-n{font-family:var(--serif);font-size:26px;font-weight:800}
+.stat-n.red{color:var(--red)}.stat-n.amber{color:var(--amber)}.stat-n.ok{color:var(--green)}
+.stat-l{font-size:10px;color:var(--text3);font-weight:500;margin-top:1px}
+
+/* ── ISSUE ITEM ── */
+.issue-item{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin:0 14px 8px;cursor:pointer;transition:all .18s;box-shadow:var(--shadow)}
+.issue-item:hover{border-color:var(--accent);box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.issue-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.issue-icon.red{background:rgba(239,68,68,.12);color:var(--red)}
+.issue-icon.amber{background:rgba(245,158,11,.12);color:var(--amber)}
+.issue-icon.ok{background:rgba(34,197,94,.12);color:var(--green)}
+.issue-body{flex:1;min-width:0}
+.issue-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.issue-desc{font-size:12px;color:var(--text2);line-height:1.5}
+.issue-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;flex-shrink:0;align-self:flex-start;margin-top:1px}
+.tag-red{background:rgba(239,68,68,.12);color:var(--red)}
+.tag-amber{background:rgba(245,158,11,.12);color:var(--amber)}
+.tag-ok{background:rgba(34,197,94,.12);color:var(--green)}
+
+/* ── ALERT ITEM ── */
+.alert-item{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin:0 14px 8px;box-shadow:var(--shadow);animation:slideUp .3s ease}
+.alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.alert-dot.urgent{background:var(--red);box-shadow:0 0 0 3px rgba(239,68,68,.2)}
+.alert-dot.warning{background:var(--amber)}
+.alert-dot.info{background:var(--accent)}
+.alert-dot.ok{background:var(--green)}
+.alert-date{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.alert-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.alert-desc{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* ── DOC GENERATOR ── */
+.doc-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:16px;cursor:pointer;transition:all .2s;margin-bottom:8px;display:flex;align-items:flex-start;gap:14px}
+.doc-card:hover,.doc-card.selected{border-color:var(--accent);background:var(--surface2)}
+.doc-card.selected .doc-check{opacity:1;color:var(--accent)}
+.doc-check{opacity:0;font-size:16px;transition:opacity .2s;flex-shrink:0;margin-top:1px}
+.doc-icon{font-size:24px;flex-shrink:0}
+.doc-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;font-family:var(--serif)}
+.doc-desc{font-size:12px;color:var(--text3);line-height:1.45}
+
+/* ── OUTPUT BOX ── */
+.output-box{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:18px;min-height:180px;margin:0 14px;position:relative;margin-bottom:10px}
+.output-text{font-size:13px;color:var(--text);line-height:1.8;white-space:pre-wrap}
+.output-placeholder{color:var(--text3);font-size:14px;text-align:center;padding:40px 0;display:flex;flex-direction:column;align-items:center;gap:10px}
+.output-placeholder span{font-size:32px;opacity:.4}
+.copy-btn{position:absolute;top:12px;right:12px;background:var(--surface2);border:1px solid var(--border);color:var(--text3);padding:6px 12px;border-radius:8px;font-size:11px;cursor:pointer;font-family:var(--font);font-weight:600;transition:all .2s}
+.copy-btn:hover{color:var(--text);border-color:var(--accent)}
+.streaming::after{content:'▋';animation:pulse .6s infinite;color:var(--accent);font-weight:400}
+
+/* ── AUDIT URL INPUT ── */
+.url-audit-wrap{margin:0 14px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:18px;box-shadow:var(--shadow)}
+.url-audit-row{display:flex;gap:8px;margin-top:10px}
+.url-audit-row .input{flex:1}
+.url-audit-row .btn{flex-shrink:0;width:auto;padding:11px 18px;font-size:13px}
+
+/* ── SETTINGS ── */
+.srow{display:flex;align-items:center;justify-content:space-between;padding:15px 0;border-bottom:1px solid var(--border)}
+.srow:last-child{border-bottom:none}
+.slabel-s{font-size:14px;font-weight:500;color:var(--text)}
+.ssub{font-size:12px;color:var(--text3);margin-top:2px}
+.toggle{width:44px;height:24px;border-radius:12px;cursor:pointer;transition:background .2s;position:relative;border:none;flex-shrink:0}
+.toggle.on{background:var(--green)}.toggle.off{background:var(--border2)}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:3px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.toggle.on::after{left:23px}.toggle.off::after{left:3px}
+.user-card{background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:var(--radius);padding:20px;margin:0 14px 14px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 28px rgba(42,92,255,.28)}
+.user-av{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;font-weight:700;font-family:var(--serif)}
+.user-name{font-size:16px;font-weight:600;color:#fff}
+.user-email{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px}
+
+/* ── PAYWALL ── */
+@keyframes shimmerGold{0%{background-position:-200% center}100%{background-position:200% center}}
+.paywall-sheet{background:var(--surface);border-radius:28px 28px 0 0;padding:28px 22px 44px;max-width:430px;width:100%;margin:0 auto;animation:slideUpSheet .32s cubic-bezier(.32,.72,0,1);max-height:90vh;overflow-y:auto;position:relative;border-top:2px solid transparent;background-clip:padding-box}
+.paywall-sheet::before{content:'';position:absolute;inset:0;border-radius:28px 28px 0 0;padding:2px 2px 0;background:linear-gradient(135deg,var(--accent),#8B5CF6,#4D7FFF,var(--accent));background-size:300% 300%;animation:shimmerGold 3s linear infinite;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.paywall-cta{width:100%;padding:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:var(--radius-sm);font-family:var(--font);font-size:15px;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 12px 36px rgba(42,92,255,.38);transition:opacity .18s,transform .14s}
+.paywall-cta:hover:not(:disabled){opacity:.92;transform:translateY(-1px)}
+.paywall-feat{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.paywall-feat:last-child{border-bottom:none}
+.pf-icon{width:36px;height:36px;border-radius:10px;background:var(--accent3);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.pf-title{font-size:13px;font-weight:600;color:var(--text)}
+.pf-sub{font-size:12px;color:var(--text3);margin-top:1px}
+.confirmed-check{font-size:64px;display:block;animation:checkPop .5s cubic-bezier(.34,1.56,.64,1)}
+
+/* ── AI STATUS ── */
+.ai-status{display:flex;align-items:center;gap:10px;padding:12px 16px;background:linear-gradient(135deg,rgba(42,92,255,.07),rgba(26,61,181,.04));border:1px solid rgba(42,92,255,.18);border-radius:var(--radius-sm);margin:0 14px 14px}
+.ai-pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.5s ease-in-out infinite;flex-shrink:0}
+.ai-status-text{font-size:12px;color:var(--accent);font-weight:500}
+
+/* ── RISK BANNER ── */
+.risk-banner{margin:0 14px 12px;padding:14px 18px;border-radius:var(--radius-sm);border:1.5px solid;display:flex;align-items:flex-start;gap:12px;animation:slideUp .35s ease}
+.risk-banner.high{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.25)}
+.risk-banner.medium{background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.25)}
+.risk-banner.low{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.25)}
+.risk-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.risk-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.risk-desc{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* ── BACK BTN ── */
+.back-btn{display:flex;align-items:center;gap:6px;padding:14px 22px 0;font-size:13px;color:var(--accent);font-weight:500;cursor:pointer;background:none;border:none;font-family:var(--font)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useRef,useMemo}=React;
+
+/* ══════════════════════════════════
+   CONFIG
+══════════════════════════════════ */
+const CONFIG={
+  APP_VERSION:'1.0.0',
+  APP_NAME:'LexGuard',
+  FREE_AUDITS:3,
+  PAYPAL_URL:'https://paypal.me/TU_USUARIO/4.99',
+};
+
+/* ══════════════════════════════════
+   NORMATIVE ALERTS DATA
+══════════════════════════════════ */
+const ALERTS_DATA=[
+  {id:1,level:'urgent',icon:'🚨',date:'Mar 2026',title:'DSA — Nuevas obligaciones para marketplaces medianos',desc:'La Comisión Europea publicó guía interpretativa sobre el umbral de 10.000 usuarios que afecta a tiendas con reviews de terceros.',topic:'DSA marketplace medianos obligaciones 2026'},
+  {id:2,level:'warning',icon:'⚠️',date:'Feb 2026',title:'Factura electrónica — Prórroga hasta Jul 2026',desc:'Hacienda confirmó prórroga para B2B. Obligatorio antes del 1 de julio de 2026 emitir en formato Factura-e.',topic:'factura electrónica obligatoria España 2026 ecommerce'},
+  {id:3,level:'warning',icon:'🍪',date:'Ene 2026',title:'RGPD — Nuevas multas por cookies de analítica',desc:'La AEPD multó a 3 ecommerce españoles por usar cookies analíticas sin consentimiento explícito. Revisión urgente.',topic:'AEPD multa cookies analítica consentimiento 2026'},
+  {id:4,level:'info',icon:'💶',date:'Dic 2025',title:'Directiva Omnibus — Precios de referencia',desc:'Obligatorio mostrar el precio mínimo de los últimos 30 días en promociones. Multas hasta el 4% de facturación anual.',topic:'Directiva Omnibus precios referencia 30 dias ecommerce España'},
+  {id:5,level:'ok',icon:'✅',date:'Nov 2025',title:'AI Act — Categorías de riesgo para ecommerce',desc:'La UE publicó la clasificación final. Los sistemas de recomendación de productos quedan como riesgo limitado.',topic:'EU AI Act riesgo limitado sistemas recomendacion ecommerce'},
+];
+
+const DOC_TYPES=[
+  {id:'privacidad',icon:'🔒',title:'Política de Privacidad',desc:'RGPD art.13 compliant. Tipos de datos, finalidades, base legal y derechos del usuario.'},
+  {id:'cookies',icon:'🍪',title:'Política de Cookies',desc:'LSSI + ePrivacy. Categorías, duración, base legal y banner conforme.'},
+  {id:'devoluciones',icon:'↩️',title:'Política de Devoluciones',desc:'14 días de desistimiento, plazos de reembolso y excepciones. Directiva 2011/83/UE.'},
+  {id:'aviso',icon:'⚖️',title:'Aviso Legal',desc:'Identificación del titular, actividad, LSSI-CE. Obligatorio para toda web comercial.'},
+  {id:'condiciones',icon:'📋',title:'Términos y Condiciones',desc:'Contrato de compraventa, precios, responsabilidades y resolución de conflictos.'},
+  {id:'dsa',icon:'🌐',title:'Política DSA',desc:'Digital Services Act. Mecanismo de reclamaciones, transparencia y moderación de contenidos.'},
+];
+
+/* ══════════════════════════════════
+   AI PROXY CALLS (Netlify Functions)
+══════════════════════════════════ */
+async function callAI(endpoint, payload){
+  const r=await fetch(`/.netlify/functions/${endpoint}`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  });
+  if(!r.ok) throw new Error('AI error');
+  return r.json();
+}
+
+/* ══════════════════════════════════
+   LOCAL STORAGE HELPERS
+══════════════════════════════════ */
+function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def}catch{return def}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+/* ══════════════════════════════════
+   TOAST
+══════════════════════════════════ */
+function Toast({msg}){return <div className="toast">{msg}</div>}
+
+/* ══════════════════════════════════
+   SPLASH
+══════════════════════════════════ */
+function Splash({darkMode}){
+  return(
+    <div className="init-splash">
+      <div className="init-splash-icon">🛡️</div>
+      <div className="init-splash-brand">Lex<em>Guard</em></div>
+      <div className="init-splash-line" style={{width:56}}/>
+      <div className="init-splash-sub">Compliance EU para ecommerce</div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════
+   LOGIN
+══════════════════════════════════ */
+function LoginScreen({onLogin}){
+  const [loading,setLoading]=useState(false);
+  function handleLogin(){
+    setLoading(true);
+    setTimeout(()=>{
+      onLogin({name:'Usuario Demo',email:'demo@mitienda.com',avatar:'U'});
+    },1200);
+  }
+  return(
+    <div className="login-screen">
+      <div className="login-inner">
+        <div className="login-logo">🛡️</div>
+        <div className="login-brand">Lex<em>Guard</em></div>
+        <div className="login-tagline">Tu ecommerce, 100% legal en Europa.<br/>Auditorías, textos legales y alertas con IA.</div>
+        <div className="login-feats">
+          {[
+            {icon:'🔍',t:'Auditoría automática',s:'Detecta incumplimientos en segundos'},
+            {icon:'📄',t:'Textos legales con IA',s:'RGPD, Cookies, Devoluciones, DSA…'},
+            {icon:'🔔',t:'Alertas normativas',s:'Te avisamos cuando cambia la ley'},
+            {icon:'📊',t:'Score de compliance',s:'Visualiza tu nivel de cumplimiento'},
+          ].map((f,i)=>(
+            <div key={i} className="login-feat">
+              <span className="login-feat-icon">{f.icon}</span>
+              <div><div className="login-feat-title">{f.t}</div><div className="login-feat-sub">{f.s}</div></div>
+            </div>
+          ))}
+        </div>
+        <button className="login-btn login-btn-main" onClick={handleLogin} disabled={loading}>
+          {loading?<><div className="spinner" style={{borderTopColor:'#0D1136'}}/> Entrando...</>:<>🚀 Empezar gratis</>}
+        </button>
+        <div className="login-note">Al continuar aceptas los <a href="#">Términos de Uso</a> y la <a href="#">Política de Privacidad</a>.<br/>LexGuard es una herramienta de apoyo y no sustituye asesoramiento legal.</div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════
+   PAYWALL
+══════════════════════════════════ */
+function PaywallSheet({onClose,onUpgrade}){
+  const [done,setDone]=useState(false);
+  function handleBuy(){
+    window.open(CONFIG.PAYPAL_URL,'_blank');
+    setTimeout(()=>{setDone(true);setTimeout(()=>{onUpgrade();onClose();},1800);},600);
+  }
+  return(
+    <div className="overlay" onClick={onClose}>
+      <div className="paywall-sheet" onClick={e=>e.stopPropagation()}>
+        <div className="sheet-handle"/>
+        {done?(
+          <div style={{textAlign:'center',padding:'20px 0'}}>
+            <span className="confirmed-check">✅</span>
+            <div style={{fontFamily:'var(--serif)',fontSize:22,fontWeight:800,marginTop:14}}>¡Bienvenido a PRO!</div>
+            <div style={{fontSize:13,color:'var(--text3)',marginTop:6}}>Acceso ilimitado activado</div>
+          </div>
+        ):(
+          <>
+            <div style={{textAlign:'center',marginBottom:22}}>
+              <div style={{fontSize:36,marginBottom:8}}>⚡</div>
+              <div style={{fontFamily:'var(--serif)',fontSize:22,fontWeight:800}}>LexGuard PRO</div>
+              <div style={{fontSize:13,color:'var(--text3)',marginTop:4}}>Acceso completo · Sin límites</div>
+              <div style={{fontSize:28,fontWeight:800,color:'var(--accent)',marginTop:12}}>4,99€<span style={{fontSize:14,fontWeight:400,color:'var(--text3)'}}>/mes</span></div>
+            </div>
+            <div style={{marginBottom:20}}>
+              {[
+                {icon:'🔍',t:'Auditorías ilimitadas',s:'Analiza todas las páginas que quieras'},
+                {icon:'📄',t:'Todos los documentos legales',s:'6 tipos de texto generados con IA'},
+                {icon:'🔔',t:'Alertas en tiempo real',s:'Email + push cuando cambia la ley'},
+                {icon:'📊',t:'Informes PDF descargables',s:'Para mostrar a tu abogado o inversores'},
+                {icon:'💬',t:'Soporte prioritario',s:'Respuesta en menos de 24h'},
+              ].map((f,i)=>(
+                <div key={i} className="paywall-feat">
+                  <div className="pf-icon">{f.icon}</div>
+                  <div><div className="pf-title">{f.t}</div><div className="pf-sub">{f.s}</div></div>
+                </div>
+              ))}
+            </div>
+            <button className="paywall-cta" onClick={handleBuy}>⚡ Activar PRO — 4,99€/mes</button>
+            <button onClick={onClose} style={{width:'100%',marginTop:10,padding:12,background:'transparent',border:'none',fontFamily:'var(--font)',fontSize:13,color:'var(--text3)',cursor:'pointer'}}>Ahora no</button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════
+   SCREEN: DASHBOARD
+══════════════════════════════════ */
+function DashboardScreen({audits,isPro,onAuditNav,onAlertNav,showToast}){
+  const lastAudit=audits[audits.length-1];
+  const score=lastAudit?lastAudit.score:null;
+  const scoreColor=score===null?'var(--text3)':score>=80?'#4ADE80':score>=50?'#FCD34D':'#F87171';
+
+  return(
+    <div className="screen screen-enter">
+      <div className="top-header">
+        <div className="logo-wrap">
+          <span className="logo-icon">🛡️</span>
+          <div><div className="logo-text">Lex<em>Guard</em></div><div className="header-sub">Compliance EU</div></div>
+        </div>
+        {isPro?<span className="pro-badge">PRO</span>:<span className="upgrade-btn" style={{cursor:'pointer'}} onClick={onAlertNav}>PRO ⚡</span>}
+      </div>
+
+      {/* SCORE HERO */}
+      <div className="hero-card">
+        <div className="hero-eyebrow">Score de Compliance</div>
+        <div className="hero-score" style={{color:score===null?'rgba(255,255,255,.4)':'#fff'}}>
+          {score===null?'—':score+'%'}
+        </div>
+        <div className="hero-sub">{score===null?'Audita tu tienda para empezar':score>=80?'✅ Excelente nivel de cumplimiento':score>=50?'⚠️ Necesitas mejoras urgentes':'🚨 Nivel de riesgo alto'}</div>
+        {score!==null&&<div className="hero-bar-track"><div className="hero-bar-fill" style={{width:score+'%'}}/></div>}
+      </div>
+
+      {/* STATS */}
+      {lastAudit&&(
+        <div className="stats-row">
+          <div className="stat-tile"><div className="stat-n red">{lastAudit.critical}</div><div className="stat-l">Críticos</div></div>
+          <div className="stat-tile"><div className="stat-n amber">{lastAudit.warnings}</div><div className="stat-l">Avisos</div></div>
+          <div className="stat-tile"><div className="stat-n ok">{lastAudit.ok}</div><div className="stat-l">Correctos</div></div>
+        </div>
+      )}
+
+      {/* QUICK ACTIONS */}
+      <div className="slabel">Acciones rápidas</div>
+      <div style={{display:'flex',gap:8,padding:'0 14px',marginBottom:10}}>
+        {[
+          {icon:'🔍',label:'Nueva auditoría',action:onAuditNav},
+          {icon:'🔔',label:'Ver alertas',action:onAlertNav},
+        ].map((a,i)=>(
+          <button key={i} onClick={a.action} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:6,padding:'14px 10px',background:'var(--surface)',border:'1.5px solid var(--border)',borderRadius:'var(--radius-sm)',cursor:'pointer',transition:'all .18s',boxShadow:'var(--shadow)',fontFamily:'var(--font)'}}>
+            <span style={{fontSize:22}}>{a.icon}</span>
+            <span style={{fontSize:11,fontWeight:600,color:'var(--text2)'}}>{a.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* RECENT AUDITS */}
+      {audits.length>0&&(
+        <>
+          <div className="slabel">Últimas auditorías</div>
+          {[...audits].reverse().slice(0,3).map((a,i)=>(
+            <div key={i} className="card card-tap" onClick={onAuditNav}>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                <div>
+                  <div style={{fontSize:14,fontWeight:600,color:'var(--text)',marginBottom:2}}>{a.url}</div>
+                  <div style={{fontSize:12,color:'var(--text3)'}}>{a.date}</div>
+                </div>
+                <div style={{textAlign:'center'}}>
+                  <div style={{fontFamily:'var(--serif)',fontSize:22,fontWeight:800,color:a.score>=80?'var(--green)':a.score>=50?'var(--amber)':'var(--red)'}}>{a.score}%</div>
+                  <div style={{fontSize:10,color:'var(--text3)'}}>score</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </>
+      )}
+
+      {/* NORMATIVE ALERT PREVIEW */}
+      <div className="slabel" style={{marginTop:8}}>Última alerta normativa</div>
+      <div className="alert-item" style={{cursor:'pointer'}} onClick={onAlertNav}>
+        <div className={`alert-dot urgent`}/>
+        <div>
+          <div className="alert-date">{ALERTS_DATA[0].date}</div>
+          <div className="alert-title">{ALERTS_DATA[0].title}</div>
+          <div className="alert-desc">{ALERTS_DATA[0].desc}</div>
+        </div>
+      </div>
+
+      {!isPro&&(
+        <div style={{margin:'8px 14px 0',padding:'16px 18px',background:'linear-gradient(135deg,rgba(42,92,255,.08),rgba(139,92,246,.05))',border:'1.5px solid rgba(42,92,255,.2)',borderRadius:'var(--radius-sm)'}}>
+          <div style={{fontSize:14,fontWeight:700,color:'var(--text)',marginBottom:4}}>💎 Pásate a PRO</div>
+          <div style={{fontSize:12,color:'var(--text2)',lineHeight:1.5,marginBottom:12}}>Auditorías ilimitadas, todos los documentos legales y alertas en tiempo real por 4,99€/mes.</div>
+          <button onClick={onAlertNav} className="btn btn-primary" style={{padding:'11px 20px',fontSize:13}}>⚡ Ver planes</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════
+   SCREEN: AUDIT
+══════════════════════════════════ */
+function AuditScreen({isPro,audits,setAudits,auditCount,setAuditCount,showPaywall,showToast}){
+  const [url,setUrl]=useState('');
+  const [loading,setLoading]=useState(false);
+  const [loadMsg,setLoadMsg]=useState('');
+  const [result,setResult]=useState(null);
+
+  const LOAD_MSGS=[
+    'Buscando política de privacidad…',
+    'Verificando banner de cookies…',
+    'Revisando política de devoluciones…',
+    'Comprobando aviso legal…',
+    'Analizando cumplimiento RGPD…',
+    'Calculando score de compliance…',
+  ];
+
+  async function runAudit(){
+    if(!url.trim()) return;
+    const freeLeft=CONFIG.FREE_AUDITS-auditCount;
+    if(!isPro&&freeLeft<=0){showPaywall();return;}
+    setLoading(true);setResult(null);
+    let mi=0;
+    const iv=setInterval(()=>{setLoadMsg(LOAD_MSGS[Math.min(mi++,LOAD_MSGS.length-1)]);},900);
+
+    try{
+      let data;
+      try{
+        data=await callAI('audit',{url:url.trim()});
+      }catch{
+        // Demo fallback
+        data={issues:[
+          {level:'critical',icon:'🚫',title:'Falta política de privacidad',desc:'No se detecta ninguna página de política de privacidad. Obligatorio por RGPD art. 13. Multa potencial: hasta 20M€ o el 4% de facturación global.'},
+          {level:'critical',icon:'🍪',title:'Banner de cookies no conforme',desc:'El banner no permite rechazar cookies con la misma facilidad que aceptarlas. Incumple la LSSI y la directiva ePrivacy vigente.'},
+          {level:'critical',icon:'📋',title:'Aviso legal incompleto',desc:'El aviso legal no incluye el NIF/CIF ni los datos de contacto obligatorios según el artículo 10 de la LSSI.'},
+          {level:'warning',icon:'↩️',title:'Política de devoluciones incompleta',desc:'No se menciona el plazo de 14 días de desistimiento obligatorio ni el procedimiento de reembolso (Directiva 2011/83/UE).'},
+          {level:'warning',icon:'💶',title:'Precios sin IVA desglosado',desc:'La Directiva Omnibus exige mostrar el precio más bajo de los últimos 30 días en todas las promociones activas.'},
+          {level:'warning',icon:'🌐',title:'Sin información DSA',desc:'La tienda muestra reseñas de usuarios sin indicar si están verificadas. El DSA exige transparencia sobre el origen de valoraciones.'},
+          {level:'ok',icon:'✅',title:'HTTPS activo',desc:'La tienda usa conexión segura SSL/TLS. Requisito básico de seguridad satisfecho.'},
+          {level:'ok',icon:'✅',title:'Datos de contacto visibles',desc:'Se detectan datos de contacto (email o formulario) accesibles en la página principal.'},
+        ]};
+      }
+      clearInterval(iv);
+      const issues=data.issues||[];
+      const critical=issues.filter(i=>i.level==='critical').length;
+      const warnings=issues.filter(i=>i.level==='warning').length;
+      const ok=issues.filter(i=>i.level==='ok').length;
+      const score=Math.round(((ok/(issues.length||1))*100)*0.7+((warnings===0?30:warnings<=2?15:0)));
+      const audit={url:url.replace(/^https?:\/\//,'').replace(/\/$/,''),date:new Date().toLocaleDateString('es-ES'),issues,critical,warnings,ok,score};
+      setResult(audit);
+      setAudits(prev=>{const n=[...prev,audit];save('lg_audits',n);return n;});
+      setAuditCount(c=>{const n=c+1;save('lg_audit_count',n);return n;});
+      showToast(`✓ Auditoría completada · Score: ${score}%`);
+    }catch(e){
+      clearInterval(iv);
+      showToast('⚠️ Error al analizar. Inténtalo de nuevo.');
+    }
+    setLoading(false);
+  }
+
+  const freeLeft=CONFIG.FREE_AUDITS-auditCount;
+
+  return(
+    <div className="screen screen-enter">
+      <div className="top-header">
+        <div className="logo-wrap">
+          <span className="logo-icon">🔍</span>
+          <div><div className="logo-text">Auditoría</div><div className="header-sub">Analiza tu tienda</div></div>
+        </div>
+        {!isPro&&<span className="upgrade-btn" onClick={showPaywall}>{freeLeft>0?`${freeLeft} gratis`:'PRO ⚡'}</span>}
+      </div>
+
+      {/* URL INPUT */}
+      <div className="url-audit-wrap">
+        <div style={{fontSize:13,fontWeight:600,color:'var(--text)',marginBottom:4}}>URL de tu tienda</div>
+        <div style={{fontSize:12,color:'var(--text3)',marginBottom:10}}>Analiza el cumplimiento legal de cualquier ecommerce</div>
+        <div className="url-audit-row">
+          <input className="input" value={url} onChange={e=>setUrl(e.target.value)} placeholder="https://tutienda.com" onKeyDown={e=>e.key==='Enter'&&runAudit()}/>
+          <button className="btn btn-primary" style={{width:'auto',padding:'11px 16px',fontSize:13}} onClick={runAudit} disabled={loading||!url.trim()}>
+            {loading?<div className="spinner"/>:'Analizar'}
+          </button>
+        </div>
+        {loading&&<div style={{display:'flex',alignItems:'center',gap:8,marginTop:10,fontSize:12,color:'var(--accent)'}}><div className="spinner"/>{loadMsg}</div>}
+      </div>
+
+      {/* RESULT */}
+      {result&&(
+        <>
+          <div className="ai-status">
+            <div className="ai-pulse"/>
+            <span className="ai-status-text">Análisis completado para {result.url}</span>
+          </div>
+
+          {/* RISK BANNER */}
+          <div className={`risk-banner ${result.critical>0?'high':result.warnings>0?'medium':'low'}`}>
+            <span className="risk-icon">{result.critical>0?'🚨':result.warnings>0?'⚠️':'✅'}</span>
+            <div>
+              <div className="risk-title">{result.critical>0?`${result.critical} incumplimiento${result.critical>1?'s':''} crítico${result.critical>1?'s':''} detectado${result.critical>1?'s':''}`:result.warnings>0?'Advertencias de compliance':'Tu tienda tiene buen nivel de compliance'}</div>
+              <div className="risk-desc">{result.critical>0?'Requieren atención inmediata. Riesgo de sanción activo.':result.warnings>0?'Revisa y corrige para evitar futuros problemas.':'Sigue así y mantén los textos actualizados.'}</div>
+            </div>
+          </div>
+
+          <div className="slabel">Resultados detallados <span style={{fontWeight:400,letterSpacing:0,textTransform:'none',fontSize:11}}>{result.issues.length} puntos</span></div>
+          {result.issues.map((issue,i)=>{
+            const c=issue.level==='critical'?'red':issue.level==='warning'?'amber':'ok';
+            const label=issue.level==='critical'?'Crítico':issue.level==='warning'?'Aviso':'OK';
+            return(
+              <div key={i} className="issue-item">
+                <div className={`issue-icon ${c}`}>{issue.icon||'📋'}</div>
+                <div className="issue-body">
+                  <div className="issue-title">{issue.title}</div>
+                  <div className="issue-desc">{issue.desc}</div>
+                </div>
+                <span className={`issue-tag tag-${c}`}>{label}</span>
+              </div>
+            );
+          })}
+        </>
+      )}
+
+      {!result&&!loading&&(
+        <div className="empty" style={{marginTop:20}}>
+          <div className="empty-icon">🔍</div>
+          <div className="empty-title">Sin auditorías aún</div>
+          <div className="empty-sub">Introduce la URL de tu tienda y pulsa Analizar para obtener tu informe de compliance.</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════
+   SCREEN: GENERADOR
+══════════════════════════════════ */
+function GeneratorScreen({isPro,showPaywall,showToast}){
+  const [selected,setSelected]=useState(null);
+  const [bizName,setBizName]=useState('');
+  const [country,setCountry]=useState('España');
+  const [products,setProducts]=useState('');
+  const [loading,setLoading]=useState(false);
+  const [output,setOutput]=useState('');
+  const [streaming,setStreaming]=useState(false);
+  const docLimit=isPro?DOC_TYPES.length:2;
+
+  async function generate(){
+    if(!selected){showToast('⚠️ Selecciona un tipo de documento');return;}
+    const idx=DOC_TYPES.findIndex(d=>d.id===selected);
+    if(!isPro&&idx>=docLimit){showPaywall();return;}
+    setLoading(true);setOutput('');setStreaming(false);
+    const docType=DOC_TYPES.find(d=>d.id===selected);
+
+    try{
+      let text;
+      try{
+        const data=await callAI('generator',{docType:selected,bizName:bizName||'Mi Tienda',country,products:products||'productos varios',isPro});
+        text=data.text||'';
+      }catch{
+        text=generateFallbackDoc(selected,bizName||'Mi Tienda',country,products||'productos varios');
+      }
+      setStreaming(true);
+      let i=0;
+      const step=Math.max(1,Math.floor(text.length/100));
+      const iv=setInterval(()=>{
+        i=Math.min(i+step,text.length);
+        setOutput(text.slice(0,i));
+        if(i>=text.length){clearInterval(iv);setStreaming(false);}
+      },14);
+      showToast('✓ Documento generado con IA');
+    }catch(e){
+      showToast('⚠️ Error al generar. Inténtalo de nuevo.');
+    }
+    setLoading(false);
+  }
+
+  function generateFallbackDoc(type,name,country,products){
+    const docMap={
+      privacidad:`POLÍTICA DE PRIVACIDAD\n${name}\n\nÚltima actualización: ${new Date().toLocaleDateString('es-ES')}\n\n1. RESPONSABLE DEL TRATAMIENTO\n${name} es el responsable del tratamiento de los datos personales que nos proporcione.\n\n2. DATOS QUE RECOPILAMOS\nRecopilamos los siguientes datos personales:\n- Datos de identificación: nombre, apellidos, DNI/NIF\n- Datos de contacto: correo electrónico, teléfono, dirección postal\n- Datos de transacción: historial de compras, datos de pago\n- Datos de navegación: dirección IP, cookies, páginas visitadas\n\n3. FINALIDAD DEL TRATAMIENTO\nSus datos se utilizan para:\n- Gestión del contrato de compraventa\n- Comunicaciones sobre su pedido\n- Cumplimiento de obligaciones legales\n- Envío de comunicaciones comerciales (con su consentimiento)\n\n4. BASE LEGAL\nEl tratamiento se basa en:\n- Ejecución del contrato (art. 6.1.b RGPD)\n- Cumplimiento de obligaciones legales (art. 6.1.c RGPD)\n- Consentimiento del interesado (art. 6.1.a RGPD)\n\n5. DERECHOS DEL USUARIO\nPuede ejercer sus derechos de acceso, rectificación, supresión, portabilidad, limitación y oposición contactando con nosotros.\n\n6. CONSERVACIÓN DE DATOS\nConservaremos sus datos durante el tiempo necesario para la finalidad del tratamiento y el cumplimiento de obligaciones legales.\n\n7. CONTACTO\nPara ejercer sus derechos o resolver cualquier duda: privacidad@${name.toLowerCase().replace(/\s/g,'')}.com`,
+      cookies:`POLÍTICA DE COOKIES\n${name}\n\nÚltima actualización: ${new Date().toLocaleDateString('es-ES')}\n\n1. ¿QUÉ SON LAS COOKIES?\nLas cookies son pequeños archivos de texto que se almacenan en su dispositivo cuando visita nuestra web.\n\n2. TIPOS DE COOKIES QUE UTILIZAMOS\n\nCookies estrictamente necesarias (sin consentimiento):\n- Sesión de usuario / carrito de compra\n- Seguridad y autenticación\nDuración: sesión\n\nCookies analíticas (requieren consentimiento):\n- Google Analytics: medición de audiencia y comportamiento\nDuración: hasta 2 años\n\nCookies de marketing (requieren consentimiento):\n- Pixel de Facebook/Meta: publicidad personalizada\n- Google Ads: seguimiento de conversiones\nDuración: hasta 2 años\n\n3. CÓMO GESTIONAR LAS COOKIES\nPuede aceptar, rechazar o personalizar las cookies mediante nuestro panel de preferencias disponible en el pie de página.\n\n4. COOKIES DE TERCEROS\nAlgunos servicios de terceros instalados en nuestra web pueden establecer sus propias cookies. Consulte las políticas de cada proveedor.\n\n5. ACTUALIZACIÓN\nEsta política puede actualizarse. Le recomendamos revisarla periódicamente.`,
+      devoluciones:`POLÍTICA DE DEVOLUCIONES Y DESISTIMIENTO\n${name}\n\nÚltima actualización: ${new Date().toLocaleDateString('es-ES')}\n\n1. DERECHO DE DESISTIMIENTO\nConforme a la Directiva 2011/83/UE y el Real Decreto Legislativo 1/2007, dispone de 14 días naturales desde la recepción del pedido para desistir del contrato sin necesidad de justificación.\n\n2. CÓMO EJERCER EL DESISTIMIENTO\n- Notifíquenos su decisión mediante comunicación inequívoca (email, formulario web)\n- Devuelva los productos en su estado original, sin usar y con embalaje original\n- Plazo máximo para devolver: 14 días desde la comunicación\n\n3. REEMBOLSO\nProcesaremos el reembolso completo (incluidos los gastos de envío originales) en un plazo máximo de 14 días desde que recibamos la devolución o justificante de envío.\n\nMétodo de reembolso: mismo medio de pago utilizado en la compra.\n\n4. GASTOS DE DEVOLUCIÓN\nLos gastos de devolución corren a cargo del cliente, salvo error nuestro o producto defectuoso.\n\n5. EXCEPCIONES AL DESISTIMIENTO\nNo aplica el derecho de desistimiento en:\n- Productos personalizados o a medida\n- Productos precintados por razones de higiene, una vez abiertos\n- Contenidos digitales descargados con consentimiento previo\n\n6. PRODUCTOS DEFECTUOSOS O INCORRECTOS\nSi recibe un producto defectuoso o diferente al pedido, contáctenos en un plazo de 48h. Nos haremos cargo de todos los gastos de devolución y reenvío.`,
+      aviso:`AVISO LEGAL\n${name}\n\nÚltima actualización: ${new Date().toLocaleDateString('es-ES')}\n\n1. DATOS IDENTIFICATIVOS\nEn cumplimiento del artículo 10 de la Ley 34/2002 de Servicios de la Sociedad de la Información (LSSI-CE), le informamos que el titular de este sitio web es:\n\nDenominación social: ${name}\nDomicilio social: [Dirección completa], ${country}\nCorreo electrónico: info@${name.toLowerCase().replace(/\s/g,'')}.com\n\n2. OBJETO Y ÁMBITO\nEste aviso legal regula el uso del sitio web de ${name}, dedicado a la venta de ${products} mediante comercio electrónico.\n\n3. PROPIEDAD INTELECTUAL\nTodos los contenidos del sitio (textos, imágenes, diseño, código) son propiedad de ${name} o de terceros que han autorizado su uso. Queda prohibida su reproducción sin autorización expresa.\n\n4. RESPONSABILIDAD\n${name} no se responsabiliza de los daños derivados del uso incorrecto del sitio, interrupciones del servicio o contenidos de terceros enlazados.\n\n5. LEY APLICABLE\nEste aviso legal se rige por la legislación española. Para cualquier controversia, las partes se someten a los Juzgados y Tribunales del domicilio del consumidor, conforme a la normativa de protección al consumidor.\n\n6. RESOLUCIÓN DE LITIGIOS EN LÍNEA\nConforme al Reglamento (UE) 524/2013, puede acceder a la plataforma de resolución de litigios en línea de la Comisión Europea: https://ec.europa.eu/consumers/odr`,
+      condiciones:`TÉRMINOS Y CONDICIONES DE COMPRA\n${name}\n\nÚltima actualización: ${new Date().toLocaleDateString('es-ES')}\n\n1. OBJETO\nEstos términos y condiciones regulan la compraventa de ${products} a través de la web de ${name}.\n\n2. PROCESO DE COMPRA\nEl proceso de compra consta de: selección de productos, introducción de datos, selección de método de pago, confirmación y pago. El contrato se perfecciona con la confirmación del pedido.\n\n3. PRECIOS Y PAGOS\n- Todos los precios incluyen el IVA aplicable\n- Se mostrarán siempre los gastos de envío antes de confirmar\n- En promociones, se mostrará el precio mínimo de los últimos 30 días (Directiva Omnibus)\n- Métodos de pago aceptados: tarjeta bancaria, PayPal, transferencia\n\n4. ENTREGA\nLos pedidos se entregan en el plazo indicado en cada producto. En caso de retraso, el cliente será informado.\n\n5. GARANTÍAS\nConforme a la Directiva 2019/771/UE, todos los productos tienen garantía legal de 3 años desde la entrega.\n\n6. MODIFICACIONES\n${name} se reserva el derecho de modificar estos términos. Los cambios se publicarán en la web con antelación.`,
+      dsa:`POLÍTICA DSA — DIGITAL SERVICES ACT\n${name}\n\nÚltima actualización: ${new Date().toLocaleDateString('es-ES')}\n\nEn cumplimiento del Reglamento (UE) 2022/2065 (Digital Services Act), ${name} informa:\n\n1. MODERACIÓN DE CONTENIDOS\n${name} modera los contenidos generados por usuarios (reseñas, comentarios) conforme a sus directrices de comunidad.\n\n2. SISTEMA DE NOTIFICACIÓN Y ACCIÓN\nCualquier usuario puede notificar contenidos ilegales o dañinos a través de: dsa@${name.toLowerCase().replace(/\s/g,'')}.com\n\nPlazo de respuesta: máximo 5 días hábiles para contenidos generales, 24 horas para contenidos que supongan riesgo grave.\n\n3. TRANSPARENCIA EN RECOMENDACIONES\nLos productos recomendados en nuestra web se basan en: popularidad de ventas, historial del usuario (si está registrado) y relevancia de búsqueda.\n\n4. PUBLICIDAD\n${name} no realiza publicidad dirigida basada en perfiles de menores ni utiliza datos especialmente sensibles para segmentación publicitaria.\n\n5. RECLAMACIONES\nPuede presentar una reclamación formal ante la Secretaría de Estado de Digitalización e Inteligencia Artificial (SEDIA) como Coordinador de Servicios Digitales en España.\n\n6. INFORME DE TRANSPARENCIA\nPublicamos un informe anual de moderación de contenidos disponible en: [URL del informe]`
+    };
+    return docMap[type]||`Documento de ${type} para ${name}. Generado el ${new Date().toLocaleDateString('es-ES')}.`;
+  }
+
+  function copyDoc(){
+    navigator.clipboard.writeText(output).then(()=>showToast('✓ Copiado al portapapeles'));
+  }
+
+  return(
+    <div className="screen screen-enter">
+      <div className="top-header">
+        <div className="logo-wrap">
+          <span className="logo-icon">📄</span>
+          <div><div className="logo-text">Generador</div><div className="header-sub">Documentos legales con IA</div></div>
+        </div>
+        {!isPro&&<span className="upgrade-btn" onClick={showPaywall}>PRO ⚡</span>}
+      </div>
+
+      <div className="slabel">Selecciona el documento</div>
+      <div style={{padding:'0 14px'}}>
+        {DOC_TYPES.map((doc,i)=>{
+          const locked=!isPro&&i>=docLimit;
+          return(
+            <div key={doc.id} className={`doc-card${selected===doc.id?' selected':''}${locked?' opacity-50':''}`} onClick={()=>locked?showPaywall():setSelected(doc.id)} style={{opacity:locked?.55:1}}>
+              <span className="doc-check">✓</span>
+              <span className="doc-icon">{doc.icon}</span>
+              <div>
+                <div className="doc-title">{doc.title}{locked&&<span style={{marginLeft:6,fontSize:10,background:'rgba(42,92,255,.12)',color:'var(--accent)',padding:'2px 6px',borderRadius:20}}>PRO</span>}</div>
+                <div className="doc-desc">{doc.desc}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* CONTROLS */}
+      <div className="slabel">Datos de tu negocio</div>
+      <div style={{padding:'0 14px',display:'flex',flexDirection:'column',gap:8,marginBottom:12}}>
+        <input className="input" value={bizName} onChange={e=>setBizName(e.target.value)} placeholder="Nombre de tu empresa o tienda"/>
+        <select className="input" value={country} onChange={e=>setCountry(e.target.value)}>
+          {['España','Francia','Alemania','Italia','Portugal','México','Argentina'].map(c=><option key={c}>{c}</option>)}
+        </select>
+        <input className="input" value={products} onChange={e=>setProducts(e.target.value)} placeholder="Tipo de productos (ej: ropa, electrónica, alimentación…)"/>
+        <button className="btn btn-primary" onClick={generate} disabled={loading||!selected}>
+          {loading?<><div className="spinner"/>&nbsp;Generando con IA…</>:<>✨ Generar documento</>}
+        </button>
+      </div>
+
+      {/* OUTPUT */}
+      <div className="output-box">
+        {output?(
+          <>
+            <button className="copy-btn" onClick={copyDoc}>Copiar</button>
+            <div className={`output-text${streaming?' streaming':''}`}>{output}</div>
+          </>
+        ):(
+          <div className="output-placeholder">
+            <span>📄</span>
+            El documento generado aparecerá aquí
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════
+   SCREEN: ALERTAS
+══════════════════════════════════ */
+function AlertsScreen({isPro,showPaywall,showToast}){
+  const [loadingId,setLoadingId]=useState(null);
+  const [adviceMap,setAdviceMap]=useState({});
+
+  async function getAdvice(alert){
+    if(!isPro&&Object.keys(adviceMap).length>=1){showPaywall();return;}
+    setLoadingId(alert.id);
+    try{
+      let text;
+      try{
+        const data=await callAI('advice',{topic:alert.topic,title:alert.title});
+        text=data.text||'';
+      }catch{
+        text=`GUÍA DE ADAPTACIÓN: ${alert.title}\n\n¿Qué ha cambiado?\n${alert.desc}\n\nAcciones que debes tomar:\n1. Revisa tu ${alert.title.toLowerCase().split('—')[0].trim()}\n2. Actualiza los textos legales afectados\n3. Implementa los cambios técnicos necesarios\n4. Documenta la adaptación para futuras auditorías\n\nPlazo: Inmediato para elementos críticos, 30-60 días para adaptaciones completas.\n\nRiesgo de no cumplir: Sanciones administrativas de la AEPD o SEDIA, posibles multas de hasta el 4% de la facturación anual.`;
+      }
+      setAdviceMap(prev=>({...prev,[alert.id]:text}));
+      showToast('✓ Guía generada');
+    }catch{
+      showToast('⚠️ Error. Inténtalo de nuevo.');
+    }
+    setLoadingId(null);
+  }
+
+  const dotClass={urgent:'urgent',warning:'warning',info:'info',ok:'ok'};
+
+  return(
+    <div className="screen screen-enter">
+      <div className="top-header">
+        <div className="logo-wrap">
+          <span className="logo-icon">🔔</span>
+          <div>
+            <div className="logo-text">Alertas</div>
+            <div className="header-sub" style={{display:'flex',alignItems:'center',gap:4}}>
+              <span style={{width:6,height:6,borderRadius:'50%',background:'var(--green)',display:'inline-block'}}/>
+              Actualizado hoy
+            </div>
+          </div>
+        </div>
+        {!isPro&&<span className="upgrade-btn" onClick={showPaywall}>PRO ⚡</span>}
+      </div>
+
+      <div className="slabel">Cambios normativos recientes</div>
+
+      {ALERTS_DATA.map(alert=>(
+        <div key={alert.id}>
+          <div className="alert-item">
+            <div className={`alert-dot ${dotClass[alert.level]}`}/>
+            <div style={{flex:1}}>
+              <div className="alert-date">{alert.date}</div>
+              <div className="alert-title">{alert.title}</div>
+              <div className="alert-desc">{alert.desc}</div>
+              {adviceMap[alert.id]&&(
+                <div style={{marginTop:12,background:'var(--surface2)',borderRadius:'var(--radius-xs)',padding:'12px 14px',fontSize:12,color:'var(--text2)',lineHeight:1.7,whiteSpace:'pre-wrap',border:'1px solid var(--border)'}}>
+                  {adviceMap[alert.id]}
+                </div>
+              )}
+              <div style={{marginTop:10}}>
+                <button className="btn-sm btn-sm-accent" onClick={()=>getAdvice(alert)} disabled={loadingId===alert.id} style={{display:'flex',alignItems:'center',gap:5}}>
+                  {loadingId===alert.id?<><div style={{width:10,height:10,border:'1.5px solid var(--accent)',borderTopColor:'transparent',borderRadius:'50%',animation:'spin .6s linear infinite'}}/> Generando…</>:<>⚡ Ver cómo adaptarme</>}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {/* EMAIL SUBSCRIBE */}
+      <div style={{margin:'8px 14px 16px',background:'var(--surface)',border:'1.5px solid var(--border)',borderRadius:'var(--radius-sm)',padding:'16px 18px',boxShadow:'var(--shadow)'}}>
+        <div style={{fontSize:13,fontWeight:600,color:'var(--text)',marginBottom:4}}>📬 Alertas por email</div>
+        <div style={{fontSize:12,color:'var(--text3)',marginBottom:12,lineHeight:1.5}}>Recibe un aviso cuando cambie una ley que afecte a tu tienda.</div>
+        <div style={{display:'flex',gap:8}}>
+          <input className="input" placeholder="tu@email.com" style={{flex:1}}/>
+          <button className="btn-sm btn-sm-accent" style={{flexShrink:0,padding:'8px 14px'}} onClick={()=>showToast('✓ Suscripción activada')}>Suscribir</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════
+   SCREEN: SETTINGS
+══════════════════════════════════ */
+function SettingsScreen({user,isPro,darkMode,setDarkMode,showPaywall,onLogout,showToast}){
+  return(
+    <div className="screen screen-enter">
+      <div className="top-header">
+        <div className="logo-wrap">
+          <span className="logo-icon">⚙️</span>
+          <div><div className="logo-text">Ajustes</div><div className="header-sub">Tu cuenta</div></div>
+        </div>
+      </div>
+
+      {/* USER CARD */}
+      <div className="user-card">
+        <div className="user-av">{(user?.name||'U')[0]}</div>
+        <div>
+          <div className="user-name">{user?.name||'Usuario'}</div>
+          <div className="user-email">{user?.email||'demo@mitienda.com'}</div>
+          <div style={{marginTop:6}}>{isPro?<span style={{background:'rgba(255,255,255,.2)',color:'#fff',fontSize:10,fontWeight:700,padding:'3px 10px',borderRadius:20}}>✓ PRO</span>:<span style={{background:'rgba(255,255,255,.15)',color:'rgba(255,255,255,.7)',fontSize:10,fontWeight:700,padding:'3px 10px',borderRadius:20}}>Plan gratuito</span>}</div>
+        </div>
+      </div>
+
+      {/* PLAN */}
+      <div className="slabel">Plan</div>
+      <div className="card">
+        {!isPro&&(
+          <div style={{marginBottom:14}}>
+            <div style={{fontSize:13,fontWeight:600,color:'var(--text)',marginBottom:4}}>💎 LexGuard PRO</div>
+            <div style={{fontSize:12,color:'var(--text3)',marginBottom:10,lineHeight:1.5}}>Auditorías ilimitadas, todos los documentos y alertas en tiempo real.</div>
+            <button className="btn btn-primary" style={{padding:'11px',fontSize:13}} onClick={showPaywall}>⚡ Activar PRO — 4,99€/mes</button>
+          </div>
+        )}
+        <div className="srow">
+          <div><div className="slabel-s">Plan actual</div><div className="ssub">{isPro?'LexGuard PRO':'Gratuito (3 auditorías)'}</div></div>
+        </div>
+      </div>
+
+      {/* PREFERENCES */}
+      <div className="slabel">Preferencias</div>
+      <div className="card">
+        <div className="srow">
+          <div><div className="slabel-s">Tema oscuro</div><div className="ssub">Modo nocturno</div></div>
+          <button className={`toggle ${darkMode?'on':'off'}`} onClick={()=>setDarkMode(d=>!d)}/>
+        </div>
+      </div>
+
+      {/* SUPPORT */}
+      <div className="slabel">Soporte</div>
+      <div className="card">
+        <div className="srow">
+          <div><div className="slabel-s">Contactar soporte</div><div className="ssub">WhatsApp · Respondo personalmente</div></div>
+          <button className="btn-sm btn-sm-accent" onClick={()=>showToast('📩 Abriendo WhatsApp…')}>Contactar</button>
+        </div>
+        <div className="srow">
+          <div><div className="slabel-s">Versión</div><div className="ssub">{CONFIG.APP_VERSION}</div></div>
+          <span style={{fontSize:12,color:'var(--text3)'}}>LexGuard</span>
+        </div>
+      </div>
+
+      {/* DANGER */}
+      <div className="slabel">Cuenta</div>
+      <div className="card">
+        <div style={{paddingTop:4}}>
+          <button className="btn btn-danger" onClick={()=>{showToast('👋 Sesión cerrada');setTimeout(onLogout,600);}}>Cerrar sesión</button>
+        </div>
+      </div>
+      <div style={{height:20}}/>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════
+   MAIN APP
+══════════════════════════════════ */
+function App(){
+  const [splash,setSplash]=useState(true);
+  const [user,setUser]=useState(()=>load('lg_user',null));
+  const [tab,setTab]=useState('home');
+  const [isPro,setIsPro]=useState(()=>load('lg_pro',false));
+  const [darkMode,setDarkMode]=useState(()=>load('lg_dark',false));
+  const [toast,setToast]=useState(null);
+  const [showPW,setShowPW]=useState(false);
+  const [audits,setAudits]=useState(()=>load('lg_audits',[]));
+  const [auditCount,setAuditCount]=useState(()=>load('lg_audit_count',0));
+  const toastRef=useRef(null);
+
+  useEffect(()=>{const t=setTimeout(()=>setSplash(false),2200);return()=>clearTimeout(t);},[]);
+  useEffect(()=>{if(darkMode)document.getElementById('root').classList.add('dark');else document.getElementById('root').classList.remove('dark');},[darkMode]);
+  useEffect(()=>{save('lg_dark',darkMode);},[darkMode]);
+
+  function showToast(msg){
+    setToast(msg);
+    clearTimeout(toastRef.current);
+    toastRef.current=setTimeout(()=>setToast(null),2800);
+  }
+
+  function handleLogin(u){setUser(u);save('lg_user',u);}
+  function handleLogout(){setUser(null);save('lg_user',null);setTab('home');}
+  function handleUpgrade(){setIsPro(true);save('lg_pro',true);showToast('⚡ ¡Bienvenido a LexGuard PRO!');}
+
+  if(splash) return <Splash/>;
+  if(!user) return <LoginScreen onLogin={handleLogin}/>;
+
+  const TABS=[
+    {id:'home',icon:'🏠',label:'Inicio'},
+    {id:'audit',icon:'🔍',label:'Auditoría'},
+    {id:'generator',icon:'📄',label:'Documentos'},
+    {id:'alerts',icon:'🔔',label:'Alertas'},
+    {id:'settings',icon:'⚙️',label:'Ajustes'},
+  ];
+
+  const alertBadge=ALERTS_DATA.filter(a=>a.level==='urgent').length;
+
+  return(
+    <div className="app-shell">
+      {toast&&<Toast msg={toast}/>}
+      {showPW&&<PaywallSheet onClose={()=>setShowPW(false)} onUpgrade={handleUpgrade}/>}
+
+      {tab==='home'&&<DashboardScreen audits={audits} isPro={isPro} onAuditNav={()=>setTab('audit')} onAlertNav={()=>setTab('alerts')} showToast={showToast}/>}
+      {tab==='audit'&&<AuditScreen isPro={isPro} audits={audits} setAudits={setAudits} auditCount={auditCount} setAuditCount={setAuditCount} showPaywall={()=>setShowPW(true)} showToast={showToast}/>}
+      {tab==='generator'&&<GeneratorScreen isPro={isPro} showPaywall={()=>setShowPW(true)} showToast={showToast}/>}
+      {tab==='alerts'&&<AlertsScreen isPro={isPro} showPaywall={()=>setShowPW(true)} showToast={showToast}/>}
+      {tab==='settings'&&<SettingsScreen user={user} isPro={isPro} darkMode={darkMode} setDarkMode={setDarkMode} showPaywall={()=>setShowPW(true)} onLogout={handleLogout} showToast={showToast}/>}
+
+      <nav className="bottom-nav">
+        {TABS.map(t=>(
+          <button key={t.id} className={`nav-btn${tab===t.id?' active':''}${t.id==='generator'?' nav-center':''}`} onClick={()=>setTab(t.id)}>
+            {t.id==='generator'?(
+              <div className="nav-fab">{t.icon}</div>
+            ):(
+              <>
+                <span className="ni">{t.icon}</span>
+                {t.id==='alerts'&&alertBadge>0&&<span className="nav-badge">{alertBadge}</span>}
+                <span className="nl">{t.label}</span>
+              </>
+            )}
+            {t.id!=='generator'&&<span className="nl" style={{marginTop:t.id==='generator'?4:0}}>{t.id==='generator'?t.label:''}</span>}
+          </button>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
